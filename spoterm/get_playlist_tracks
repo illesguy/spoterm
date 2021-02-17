@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+import os
+import sys
+import argparse
+from dao.spotify_dao import SpotifyDao
+from authorization.client_credentials_token_provider import ClientCredentialsTokenProvider
+
+parser = argparse.ArgumentParser(description='Arguments')
+parser.add_argument('playlists', type=str, nargs='*', help='playlists to get tracks for')
+parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi', default=os.environ['SPOTIFY_CLIENT_ID'])
+parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi', default=os.environ['SPOTIFY_CLIENT_SECRET'])
+parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use', default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
+args = parser.parse_args()
+
+if not args.playlists:
+    playlists = [u.strip() for l in sys.stdin.readlines() for u in l.split(' ')]
+else:
+    playlists = args.playlists
+
+token_cache = None if args.token_cache_loc is None else os.path.join(args.token_cache_loc, '.cc_token_cache.json')
+
+auth = ClientCredentialsTokenProvider(args.client_id, args.client_secret, token_cache)
+dao = SpotifyDao(auth)
+
+retrieved = []
+for playlist in playlists:
+    playlist_id = playlist.replace('spotify:playlist:', '')
+
+    url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks?fields=items.track.uri,next'
+    while True:
+        res = dao.get(url)
+        retrieved.extend(res['items'])
+        if res['next']:
+            url = res['next']
+        else:
+            break
+
+for r in retrieved:
+    print(r['track']['uri'])

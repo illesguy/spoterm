@@ -1,0 +1,7 @@
+pytest==5.3.5
+pytest-mock
+pytest-cov
+pylint
+mypy
+pycodestyle
+freezegun
