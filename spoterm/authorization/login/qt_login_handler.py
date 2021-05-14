@@ -1,7 +1,7 @@
 from PyQt5.Qt import QUrl
 from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from authorization.login.login_handler import LoginHandler
+from spoterm.authorization.login.login_handler import LoginHandler
 
 
 class QtLoginHandlerMeta(type(QDialog), type(LoginHandler)):

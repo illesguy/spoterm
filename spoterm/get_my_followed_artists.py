@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import os
 import argparse
-from config.env import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
-from dao.spotify_dao import SpotifyDao
-from authorization.authorization_code_token_provider import AuthorizationCodeTokenProvider
-from authorization.login.chrome_driver_login_handler import ChromeDriverLoginHandler
+from spoterm.config.env import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
+from spoterm.dao.spotify_dao import SpotifyDao
+from spoterm.authorization.authorization_code_token_provider import AuthorizationCodeTokenProvider
+from spoterm.authorization.login.chrome_driver_login_handler import ChromeDriverLoginHandler
 
 parser = argparse.ArgumentParser(description='Arguments')
 parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi', default=os.environ['SPOTIFY_CLIENT_ID'])

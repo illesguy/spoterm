@@ -1,23 +1,27 @@
 #!/usr/bin/env python
 import os
 import argparse
-from config.env import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
-from dao.spotify_dao import SpotifyDao
-from authorization.authorization_code_token_provider import AuthorizationCodeTokenProvider
-from authorization.login.chrome_driver_login_handler import ChromeDriverLoginHandler
+from spoterm.config.env import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
+from spoterm.dao.spotify_dao import SpotifyDao
+from spoterm.authorization.authorization_code_token_provider import AuthorizationCodeTokenProvider
+from spoterm.authorization.login.chrome_driver_login_handler import ChromeDriverLoginHandler
 
 parser = argparse.ArgumentParser(description='Arguments')
 parser.add_argument('--filter-name', '-f', type=str, help='Optional filter text to filter playlists by name')
-parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi', default=os.environ['SPOTIFY_CLIENT_ID'])
-parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi', default=os.environ['SPOTIFY_CLIENT_SECRET'])
-parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use', default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
+parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi',
+                    default=os.environ['SPOTIFY_CLIENT_ID'])
+parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi',
+                    default=os.environ['SPOTIFY_CLIENT_SECRET'])
+parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use',
+                    default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
 args = parser.parse_args()
 
 token_cache = None if args.token_cache_loc is None else os.path.join(args.token_cache_loc, '.ac_token_cache.json')
 scopes = [s for v in SPOTIFY_AUTH_SCOPES.values() for s in v]
 login_handler = ChromeDriverLoginHandler(os.environ.get('CHROME_DRIVER_PATH'))
 
-auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes, REDIRECT_URI, login_handler, token_cache)
+auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes, REDIRECT_URI,
+                                      login_handler, token_cache)
 dao = SpotifyDao(auth)
 
 retrieved = []

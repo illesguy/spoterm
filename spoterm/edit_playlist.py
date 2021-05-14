@@ -5,23 +5,26 @@ import json
 import base64
 import argparse
 import requests
-from config.env import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
-from dao.spotify_dao import SpotifyDao
-from authorization.authorization_code_token_provider import AuthorizationCodeTokenProvider
-from authorization.login.chrome_driver_login_handler import ChromeDriverLoginHandler
+from spoterm.config.env import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
+from spoterm.dao.spotify_dao import SpotifyDao
+from spoterm.authorization.authorization_code_token_provider import AuthorizationCodeTokenProvider
+from spoterm.authorization.login.chrome_driver_login_handler import ChromeDriverLoginHandler
 
 parser = argparse.ArgumentParser(description='Arguments')
 parser.add_argument('uris', type=str, nargs='*', help='track uris to print info for')
 parser.add_argument('--playlist', '-p', type=str, help='URI of playlist to edit', required=True)
 parser.add_argument('--image', '-i', type=str, help='Image to set for playlist, either path to file or an album uri')
-parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi', default=os.environ['SPOTIFY_CLIENT_ID'])
-parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi', default=os.environ['SPOTIFY_CLIENT_SECRET'])
-parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use', default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
+parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi',
+                    default=os.environ['SPOTIFY_CLIENT_ID'])
+parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi',
+                    default=os.environ['SPOTIFY_CLIENT_SECRET'])
+parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use',
+                    default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
 parser.add_argument('--overwrite', '-o', action='store_true', help='Overwrites previous tracks in playlist')
 args = parser.parse_args()
 
 if not args.uris:
-    uris = [u.strip() for l in sys.stdin.readlines() for u in l.split(' ')]
+    uris = [u.strip() for ln in sys.stdin.readlines() for u in ln.split(' ')]
 else:
     uris = args.uris
 
@@ -29,7 +32,8 @@ token_cache = None if args.token_cache_loc is None else os.path.join(args.token_
 scopes = [s for v in SPOTIFY_AUTH_SCOPES.values() for s in v]
 login_handler = ChromeDriverLoginHandler(os.environ.get('CHROME_DRIVER_PATH'))
 
-auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes, REDIRECT_URI, login_handler, token_cache)
+auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes, REDIRECT_URI,
+                                      login_handler, token_cache)
 dao = SpotifyDao(auth)
 playlist_id = args.playlist.replace("spotify:playlist:", "")
 
@@ -66,7 +70,7 @@ if uris:
                 url = res['next']
             else:
                 break
-        
+
         url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
         for batch in batches:
             if batch:

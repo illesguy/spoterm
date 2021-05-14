@@ -1,6 +1,6 @@
 from typing import Dict, Any
 import requests
-from authorization.spotify_token_provider import SpotifyTokenProvider
+from spoterm.authorization.spotify_token_provider import SpotifyTokenProvider
 
 
 class SpotifyDao:

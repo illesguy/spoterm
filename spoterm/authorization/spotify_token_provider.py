@@ -18,7 +18,7 @@ class SpotifyTokenProvider(ABC):
         self._init_token()
 
     def get_token(self) -> str:
-        if not self.token or self.token_expires < datetime.now():   
+        if not self.token or self.token_expires < datetime.now():
             self._renew_token()
             self._save_token_to_cache()
         return self.token

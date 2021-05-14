@@ -3,21 +3,24 @@ import os
 import sys
 import argparse
 from tabulate import tabulate
-from dao.spotify_dao import SpotifyDao
-from authorization.client_credentials_token_provider import ClientCredentialsTokenProvider
+from spoterm.dao.spotify_dao import SpotifyDao
+from spoterm.authorization.client_credentials_token_provider import ClientCredentialsTokenProvider
 
 parser = argparse.ArgumentParser(description='Arguments')
 parser.add_argument('uris', type=str, nargs='*', help='track uris to print info for')
-parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi', default=os.environ['SPOTIFY_CLIENT_ID'])
-parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi', default=os.environ['SPOTIFY_CLIENT_SECRET'])
-parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use', default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
+parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi',
+                    default=os.environ['SPOTIFY_CLIENT_ID'])
+parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi',
+                    default=os.environ['SPOTIFY_CLIENT_SECRET'])
+parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use',
+                    default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
 parser.add_argument('--uri', '-u', action='store_true')
 parser.add_argument('--bpm', '-b', action='store_true')
 parser.add_argument('--release', '-r', action='store_true')
 args = parser.parse_args()
 
 if not args.uris:
-    track_uris = [u.strip() for l in sys.stdin.readlines() for u in l.split(' ')]
+    track_uris = [u.strip() for ln in sys.stdin.readlines() for u in ln.split(' ')]
 else:
     track_uris = args.uris
 
