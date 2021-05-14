@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 import os
 import argparse
-from config import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
+from config.env import REDIRECT_URI, SPOTIFY_AUTH_SCOPES
 from dao.spotify_dao import SpotifyDao
 from authorization.authorization_code_token_provider import AuthorizationCodeTokenProvider
 from authorization.login.chrome_driver_login_handler import ChromeDriverLoginHandler
 
 parser = argparse.ArgumentParser(description='Arguments')
-parser.add_argument('--filter-name', '-f', type=str, help='Optional filter text to filter playlists by name')
 parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi', default=os.environ['SPOTIFY_CLIENT_ID'])
 parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi', default=os.environ['SPOTIFY_CLIENT_SECRET'])
 parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use', default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
@@ -21,18 +20,14 @@ auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes
 dao = SpotifyDao(auth)
 
 retrieved = []
-url = 'https://api.spotify.com/v1/me/playlists?limit=50&fields=items.uri,items.name,next'
+url = 'https://api.spotify.com/v1/me/following?limit=50&type=artist&fields=artists.items.uri,artists.next'
 while True:
     res = dao.get(url)
-    retrieved.extend(res['items'])
-    if res['next']:
-        url = res['next']
+    retrieved.extend(res['artists']['items'])
+    if res['artists']['next']:
+        url = res['artists']['next']
     else:
         break
 
 for r in retrieved:
-    if args.filter_name:
-        if args.filter_name in r['name']:
-            print(r['uri'])
-    else:
-        print(r['uri'])
+    print(r['uri'])

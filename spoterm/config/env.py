@@ -8,4 +8,5 @@ SPOTIFY_AUTH_SCOPES = {'follow': ['user-follow-read', 'user-follow-modify'],
                                            'user-modify-playback-state'],
                        'playlists': ['playlist-read-collaborative', 'playlist-modify-private',
                                      'playlist-modify-public', 'playlist-read-private'],
-                       'playback': ['streaming', 'app-remote-control']}
+                       'playback': ['streaming', 'app-remote-control'],
+                       'ugc': ['ugc-image-upload']}
