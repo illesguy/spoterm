@@ -46,7 +46,7 @@ def _format_track_result(track_result, add_uri, add_album, add_release, bpms):
     return res
 
 
-def get_track_data(dao, get_bpm, get_uri, get_album, get_release):
+def get_track_data(dao, track_uris, get_bpm, get_uri, get_album, get_release):
     track_data = []
 
     while True:
@@ -60,7 +60,9 @@ def get_track_data(dao, get_bpm, get_uri, get_album, get_release):
         else:
             res_bpms = dict()
 
-        track_data.extend([_format_track_result(t, get_uri, get_album, get_release, res_bpms) for t in results['tracks']])
+        track_data.extend(
+            [_format_track_result(t, get_uri, get_album, get_release, res_bpms) for t in results['tracks']]
+        )
         if len(track_uris) > 50:
             track_uris = track_uris[50:]
         else:
@@ -84,7 +86,7 @@ def main():
 
     auth = ClientCredentialsTokenProvider(args.client_id, args.client_secret, token_cache)
     dao = SpotifyDao(auth)
-    track_data = get_track_data(dao, args.bpm, args.uri, args.album, args.release)
+    track_data = get_track_data(dao, track_uris, args.bpm, args.uri, args.album, args.release)
 
     if not track_data:
         print('No track data found for provided uri(s)')

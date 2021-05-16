@@ -14,7 +14,8 @@ def _parse_args():
     parser = argparse.ArgumentParser(description='Arguments')
     parser.add_argument('uris', type=str, nargs='*', help='track uris to print info for')
     parser.add_argument('--playlist', '-p', type=str, help='URI of playlist to edit', required=True)
-    parser.add_argument('--image', '-i', type=str, help='Image to set for playlist, either path to file or an album uri')
+    parser.add_argument('--image', '-i', type=str,
+                        help='Image to set for playlist, either path to file or an album uri')
     parser.add_argument('--client-id', '-c', type=str, help='Client id required to use webapi',
                         default=os.environ['SPOTIFY_CLIENT_ID'])
     parser.add_argument('--client-secret', '-s', type=str, help='Client secret required to use webapi',
@@ -49,7 +50,7 @@ def update_playlist_image(dao, playlist_id, image_uri):
 
 def delete_tracks_from_playlist(dao, playlist_id, track_uris):
     url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
-    
+
     if len(track_uris) > 100:
         uris_to_delete = track_uris[:100]
         uris_left = track_uris[100:]
@@ -64,7 +65,8 @@ def delete_tracks_from_playlist(dao, playlist_id, track_uris):
 
         if not uris_left:
             break
-        elif len(uris_left) > 100:
+        
+        if len(uris_left) > 100:
             uris_to_delete = uris_left[:100]
             uris_left = uris_left[100:]
         else:
@@ -86,7 +88,8 @@ def add_tracks_to_playlist(dao, playlist_id, track_uris):
 
         if not uris_left:
             break
-        elif len(uris_left) > 100:
+        
+        if len(uris_left) > 100:
             uris_to_add = uris_left[:100]
             uris_left = uris_left[100:]
         else:
@@ -107,7 +110,7 @@ def main():
     login_handler = ChromeDriverLoginHandler(os.environ.get('CHROME_DRIVER_PATH'))
 
     auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes, REDIRECT_URI,
-                                        login_handler, token_cache)
+                                          login_handler, token_cache)
     dao = SpotifyDao(auth)
     playlist_id = args.playlist.replace("spotify:playlist:", "")
 

@@ -42,7 +42,7 @@ def main():
     login_handler = ChromeDriverLoginHandler(os.environ.get('CHROME_DRIVER_PATH'))
 
     auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes, REDIRECT_URI,
-                                        login_handler, token_cache)
+                                          login_handler, token_cache)
     dao = SpotifyDao(auth)
     retrieved = get_my_playlists(dao, args.filter_name)
     for r in retrieved:
