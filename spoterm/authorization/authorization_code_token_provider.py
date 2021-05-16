@@ -4,8 +4,8 @@ from datetime import datetime
 from datetime import timedelta
 import uuid
 import requests
-from authorization.spotify_token_provider import SpotifyTokenProvider
-from authorization.login.login_handler import LoginHandler
+from spoterm.authorization.spotify_token_provider import SpotifyTokenProvider
+from spoterm.authorization.login.login_handler import LoginHandler
 
 
 class AuthorizationCodeTokenProvider(SpotifyTokenProvider):

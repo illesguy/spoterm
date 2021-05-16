@@ -1,4 +1,4 @@
-from authorization.login.login_handler import LoginHandler
+from spoterm.authorization.login.login_handler import LoginHandler
 
 
 class ChromeDriverLoginHandler(LoginHandler):

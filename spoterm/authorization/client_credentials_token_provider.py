@@ -1,7 +1,7 @@
 from datetime import datetime
 from datetime import timedelta
 import requests
-from authorization.spotify_token_provider import SpotifyTokenProvider
+from spoterm.authorization.spotify_token_provider import SpotifyTokenProvider
 
 
 class ClientCredentialsTokenProvider(SpotifyTokenProvider):
