@@ -1,2 +1,4 @@
 requests
 tabulate
+PyQt5
+selenium
