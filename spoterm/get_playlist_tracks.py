@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+from collections import defaultdict
 from spoterm.dao.spotify_dao import SpotifyDao
 from spoterm.authorization.client_credentials_token_provider import ClientCredentialsTokenProvider
 
@@ -18,19 +19,19 @@ def _parse_args():
 
 
 def get_playlist_tracks(dao, playlists):
-    retrieved = []
+    playlist_tracks = defaultdict(list)
     for playlist in playlists:
         playlist_id = playlist.replace('spotify:playlist:', '')
 
         url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks?fields=items.track.uri,next'
         while True:
             res = dao.get(url)
-            retrieved.extend(res['items'])
+            playlist_tracks[playlist].extend(res['items'])
             if res['next']:
                 url = res['next']
             else:
                 break
-    return retrieved
+    return playlist_tracks
 
 
 def main():
@@ -44,9 +45,10 @@ def main():
 
     auth = ClientCredentialsTokenProvider(args.client_id, args.client_secret, token_cache)
     dao = SpotifyDao(auth)
-    retrieved = get_playlist_tracks(dao, playlists)
-    for r in retrieved:
-        print(r['track']['uri'])
+    playlists = get_playlist_tracks(dao, playlists)
+    for playlist in playlists.values():
+        for track in playlist:
+            print(track['track']['uri'])
 
 
 if __name__ == '__main__':

@@ -61,7 +61,7 @@ def get_track_data(dao, track_uris, get_bpm, get_uri, get_album, get_release):
             res_bpms = dict()
 
         track_data.extend(
-            [_format_track_result(t, get_uri, get_album, get_release, res_bpms) for t in results['tracks']]
+            [_format_track_result(t, get_uri, get_album, get_release, res_bpms) for t in results['tracks'] if t is not None]
         )
         if len(track_uris) > 50:
             track_uris = track_uris[50:]

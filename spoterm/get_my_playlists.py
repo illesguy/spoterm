@@ -18,7 +18,7 @@ def _parse_args():
     return parser.parse_args()
 
 
-def get_my_playlists(dao, filter_name):
+def get_my_playlists(dao):
     retrieved = []
     url = 'https://api.spotify.com/v1/me/playlists?limit=50&fields=items.uri,items.name,next'
     while True:
@@ -29,8 +29,6 @@ def get_my_playlists(dao, filter_name):
         else:
             break
 
-    if filter_name:
-        retrieved = [r for r in retrieved if filter_name in r['name']]
     return retrieved
 
 
@@ -44,9 +42,10 @@ def main():
     auth = AuthorizationCodeTokenProvider(args.client_id, args.client_secret, scopes, REDIRECT_URI,
                                           login_handler, token_cache)
     dao = SpotifyDao(auth)
-    retrieved = get_my_playlists(dao, args.filter_name)
+    retrieved = get_my_playlists(dao)
     for r in retrieved:
-        print(r['uri'])
+        if not args.filter_name or args.filter_name in r['name']:
+            print(r['uri'])
 
 
 if __name__ == '__main__':

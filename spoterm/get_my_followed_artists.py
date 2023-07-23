@@ -14,6 +14,7 @@ def _parse_args():
                         default=os.environ['SPOTIFY_CLIENT_SECRET'])
     parser.add_argument('--token-cache-loc', '-t', type=str, help='Location of token cache to use',
                         default=os.environ.get('SPOTIFY_TOKEN_CACHE_LOC'))
+    parser.add_argument('--name', '-n', action='store_true', help='Also returns artist name')
     return parser.parse_args()
 
 
@@ -42,7 +43,10 @@ def main():
     dao = SpotifyDao(auth)
     retrieved = get_my_followed_artists(dao)
     for r in retrieved:
-        print(r['uri'])
+        if args.name:
+            print(r['uri'], r['name'])
+        else:
+            print(r['uri'])
 
 
 if __name__ == '__main__':
